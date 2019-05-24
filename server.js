@@ -17,7 +17,14 @@ function decodeToken(token) {
   return JSON.parse(window.atob(base64));
 }
 
-app.post("/api/auth/login", function(req, res) {
+app.post("/api/auth/login", function (req, res) {
+  if (Math.random() > 0.75) {
+    res.status(400).send({
+      error: 'invalid_grant',
+      error_description: 'invalid_grant_full'
+    });
+    return;
+  }
   res.status(200).send({
     access_token: access_token,
     token_type: "bearer",
@@ -26,7 +33,7 @@ app.post("/api/auth/login", function(req, res) {
   });
 });
 
-app.get("/api/user", function(req, res) {
+app.get("/api/user", function (req, res) {
   if (Math.random() > 0.75) {
     res.statusMessage = "invalid_token";
     res.status(401).send();
@@ -34,18 +41,33 @@ app.get("/api/user", function(req, res) {
   }
   res
     .status(200)
-    .send([
-      { id: 1, name: "Mario", surname: "Rossi" },
-      { id: 2, name: "Luigi", surname: "Bianchi" },
-      { id: 3, name: "Marco", surname: "Rossini" },
-      { id: 4, name: "Maria", surname: "Verdi" }
+    .send([{
+        id: 1,
+        name: "Mario",
+        surname: "Rossi"
+      },
+      {
+        id: 2,
+        name: "Luigi",
+        surname: "Bianchi"
+      },
+      {
+        id: 3,
+        name: "Marco",
+        surname: "Rossini"
+      },
+      {
+        id: 4,
+        name: "Maria",
+        surname: "Verdi"
+      }
     ]);
 });
 
-app.get("*", function(req, res) {
+app.get("*", function (req, res) {
   res.sendFile(__dirname + "/index.html");
 });
 
-app.listen(PORT, function() {
+app.listen(PORT, function () {
   console.log(`Server listening on port ${PORT}!`);
 });
